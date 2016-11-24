@@ -22,11 +22,32 @@ import argparse
 #
 #########################################################
 #                                                       #
+# Command line Flag Construction                        #
+#                                                       #
+#########################################################
+#
+parser = argparse.ArgumentParser(
+    description = 'A script to automate the creation of Accounts on the Computer Science High Performance Research Cluster for Western Washington University.',
+    epilog = 'Last Updated: 20161115'
+    )
+parser.add_argument('--username', required=True, help='login name')
+parser.add_argument('--fullname', help='first and last name, must include ""')
+parser.add_argument('--shell', default='bash', help='default shell')
+# uid and gid should likely be populated from a wbinfo
+parser.add_argument('--uid', required=True, type=int, help='user id')
+#parser.add_argument('--gid', required=True, type=int, help='group id')
+args = parser.parse_args()
+print(args)
+#
+#
+#########################################################
+#                                                       #
 # Variables                                             #
 #                                                       #
 #########################################################
 #
 # Variables
+# str(args.name)
 weapon_delay = int()
 ja_stp_lvl = int()
 merit_stp_lvl = int()
@@ -45,6 +66,9 @@ stp_ja = [(1,10), (2,15), (3,20), (4,25), (5,30)]
 # Defined Functions                                     #
 #                                                       #
 #########################################################
+#
+# THOUGHT: create a list of lists (dictionary?) to condence all below checks into a single function
+#
 #
 def delay_calc(weapon_delay):
     if weapon_delay <= 450:
