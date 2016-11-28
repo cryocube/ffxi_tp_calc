@@ -27,15 +27,12 @@ import argparse
 #########################################################
 #
 parser = argparse.ArgumentParser(
-    description = 'A script to automate the creation of Accounts on the Computer Science High Performance Research Cluster for Western Washington University.',
-    epilog = 'Last Updated: 20161115'
+    description = 'Automates math behind Store TP and Swings to Weaponskills.',
+    epilog = 'Last Updated: 20161126'
     )
-parser.add_argument('--username', required=True, help='login name')
-parser.add_argument('--fullname', help='first and last name, must include ""')
-parser.add_argument('--shell', default='bash', help='default shell')
-# uid and gid should likely be populated from a wbinfo
-parser.add_argument('--uid', required=True, type=int, help='user id')
-#parser.add_argument('--gid', required=True, type=int, help='group id')
+parser.add_argument('--delay', required=True, help='Weapon Delay of main weapon')
+parser.add_argument('--ja_stp', default=0, help='Store TP Rank')
+parser.add_argument('--gear_stp', help='Store TP from Gear')
 args = parser.parse_args()
 print(args)
 #
@@ -48,7 +45,7 @@ print(args)
 #
 # Variables
 # str(args.name)
-weapon_delay = int()
+weapon_delay = args.delay
 ja_stp_lvl = int()
 merit_stp_lvl = int()
 gear_haste = int()
@@ -60,6 +57,10 @@ tp_rate = float()
 #
 # Tuples
 stp_ja = [(1,10), (2,15), (3,20), (4,25), (5,30)]
+# 
+# Dictionary
+# (weapon_delay_diff, delay_multiplier, base_sel, floor,)
+equa_components = [(180, 1.5, 180, 5),(180, 6.5, 270, 5),(450, 1.5, 30, 11.5),(480, 1.5, 50, 13),(530, 3.5, 470, 14.5)]
 #
 #########################################################
 #                                                       #
@@ -122,7 +123,7 @@ def floor_sel(weapon_delay):
 #
 def core_calc(base,d_mult,delay,floor):
     tp_per_hit = float((floor+((delay*d_mult)/base)))
-    return = math.floor(float(tp_per_hit))
+    return math.floor(float(tp_per_hit))
 #
 #
 #########################################################
