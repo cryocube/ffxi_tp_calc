@@ -61,6 +61,7 @@ stp_ja = [(1,10), (2,15), (3,20), (4,25), (5,30)]
 # Dictionary
 # (weapon_delay_diff, delay_multiplier, base_sel, floor,)
 equa_components = [(180, 1.5, 180, 5),(180, 6.5, 270, 5),(450, 1.5, 30, 11.5),(480, 1.5, 50, 13),(530, 3.5, 470, 14.5)]
+traits = list()
 #
 #########################################################
 #                                                       #
@@ -71,54 +72,19 @@ equa_components = [(180, 1.5, 180, 5),(180, 6.5, 270, 5),(450, 1.5, 30, 11.5),(4
 # THOUGHT: create a list of lists (dictionary?) to condence all below checks into a single function
 #
 #
-def delay_calc(weapon_delay):
-    if weapon_delay <= 450:
-        equation = int(weapon_delay) - 180
-        return equation
-    elif weapon_delay <= 480:
-        equation = int(weapon_delay) - 450
-        return equation
-    elif weapon_delay <= 530:
-        equation = int(weapon_delay) - 480
-        return equation
+def select_traits(weapon_delay,equa_components):
+    if int(weapon_delay) <= 180:
+        return equa_components[0]
+    elif int(weapon_delay) <= 450:
+        return equa_components[1]
+    elif int(weapon_delay) <= 480:
+        return equa_conponents[2]
+    elif int(weapon_delay) <= 530:
+        return equa_components[3]
     else:
-        equation = int(weapon_delay) - 530
-        return equation
+        return equa_components[4]
 #
 #
-def delay_multiplier(weapon_delay):
-    if weapon_delay <= 180:
-        return float(1.5)
-    elif weapon_delay <= 450:
-        return float(6.5)
-    elif weapon_delay <= 530:
-        return float(1.5)    
-    else:
-        return float(3.5)
-#
-#
-def base_sel(weapon_delay):
-    if weapon_delay <= 180:
-        return 180
-    elif weapon_delay <= 450:
-        return 270
-    elif weapon_delay <= 480:
-        return 30
-    elif weapon_delay <= 530:
-        return 50
-    else:
-        return 470
-#
-#
-def floor_sel(weapon_delay):
-    if weapon_delay <= 450:
-        return float(5)
-    elif weapon_delay <= 480:
-        return float(11.5)
-    elif weapon_delay <= 530:
-        return float(13)
-    else:
-        return float(14.5)
 #
 #
 def core_calc(base,d_mult,delay,floor):
@@ -133,14 +99,16 @@ def core_calc(base,d_mult,delay,floor):
 #########################################################
 #
 #
-base = base_sel(weapon_delay)
-delay = delay_calc(weapon_delay)
-d_mult = delay_multiplier(weapon_delay)
-floor = floor_sel(weapon_delay)
-tp_rate = core_calc(base,d_mult,delay,floor)
+traits = select_traits(weapon_delay,equa_components)
+print(traits)
+base = traits[2]
+delay = traits[0]
+d_mult = traits[1]
+floor = traits[3]
+#tp_rate = core_calc(base,d_mult,delay,floor)
 print("Base = "+str(base))
 print("Delay = "+str(delay))
 print("Delay Multiplier = "+str(d_mult))
 print("Floor = "+str(floor))
-print("TP per swing is "+str(tp_rate))
+#print("TP per swing is "+str(tp_rate))
 
