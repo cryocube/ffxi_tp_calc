@@ -46,7 +46,7 @@ print(args)
 # Variables
 # str(args.name)
 weapon_delay = args.delay
-ja_stp_lvl = int()
+ja_stp_lvl = args.ja_stp
 merit_stp_lvl = int()
 gear_haste = int()
 delay = float()
@@ -54,9 +54,10 @@ d_mult = float()
 base = float()
 floor = float()
 tp_rate = float()
+ja_stp = int()
 #
-# Tuples
-stp_ja = [(1,10), (2,15), (3,20), (4,25), (5,30)]
+# Dictionary
+stp_ja = {1: 10, 2: 15, 3: 20, 4: 25, 5: 30}
 # 
 # Dictionary
 # (weapon_delay_diff, delay_multiplier, base_sel, floor,)
@@ -85,6 +86,8 @@ def select_traits(weapon_delay,equa_components):
         return equa_components[4]
 #
 #
+def ja_conv(ja_stp_lvl,stp_ja):   
+    return stp_ja.get(int(ja_stp_lvl), 0)
 #
 #
 def core_calc(base,d_mult,delay,floor):
@@ -111,4 +114,5 @@ print("Delay = "+str(delay))
 print("Delay Multiplier = "+str(d_mult))
 print("Floor = "+str(floor))
 #print("TP per swing is "+str(tp_rate))
-
+ja_stp = ja_conv(ja_stp_lvl,stp_ja)
+print(ja_stp)
