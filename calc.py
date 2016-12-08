@@ -37,7 +37,8 @@ parser.add_argument('--gear_stp', default=0, help='Store TP from Gear', type=int
 parser.add_argument('--merits', default=0, help='Number of Store TP Merits', type=int)
 parser.add_argument('--kakka', action='store_true', help='Using Kakka:Ichi with a Ninja Subjob')
 parser.add_argument('--food_stp', default=0, help='Store TP gained from food', type=int)
-parser.add_argument('--dw', default=0, help='Dual Wielding - Enter the Delay of the Offhand Weapon', type=int)
+parser.add_argument('--dw', action='store_true', help='Dual Wielding Flag')
+parser.add_argument('--off', default=0, help='Delay of Off Hand Weapon', type=int)
 args = parser.parse_args()
 print(args)
 #
@@ -50,7 +51,8 @@ print(args)
 #
 # Variables
 main_delay = args.delay
-off_delay = args.dw
+off_delay = args.off 
+dw = args.dw
 jt_stp_lvl = args.jt_stp
 merit_stp_lvl = args.merits
 kakka = args.kakka
@@ -100,8 +102,11 @@ def tot_stp(jt_stp,merit_stp_lvl,kakka,gear_stp,fstp):
         return bonus
 #
 #
-def delay_calc(main_delay,delay_diff,off_delay):
-    return (main_delay+off_delay)-delay_diff
+def delay_calc(main_delay,delay_diff,off_delay,dw):
+    if dw == True:
+        return (main_delay+off_delay)
+    else:
+        return main_delay-delay_diff
 #
 #
 def core_calc(base,d_mult,floor,stp,delay):
@@ -132,7 +137,7 @@ print("Base = {}".format(traits[2]))
 print("Delay = {}".format(traits[0]))
 print("Delay Multiplier = {}".format(traits[1]))
 print("Floor = {}".format(traits[3]))
-delay = delay_calc(main_delay,delay_diff,off_delay)
+delay = delay_calc(main_delay,delay_diff,off_delay,dw)
 jt_stp = jt_conv(jt_stp_lvl, stp_jt)
 print("Job Trait Store TP = {}".format(jt_stp))
 stp = tot_stp(jt_stp, merit_stp_lvl, kakka, gear_stp, fstp)
