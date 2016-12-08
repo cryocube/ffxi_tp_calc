@@ -18,6 +18,7 @@
 #
 import math
 import argparse
+import decimal
 #
 #
 #########################################################
@@ -31,8 +32,11 @@ parser = argparse.ArgumentParser(
     epilog = 'Last Updated: 20161126'
     )
 parser.add_argument('--delay', required=True, help='Weapon Delay of main weapon')
-parser.add_argument('--ja_stp', default=0, help='Store TP Rank')
-parser.add_argument('--gear_stp', help='Store TP from Gear')
+parser.add_argument('--jt_stp', default=0, help='Store TP Rank')
+parser.add_argument('--gear_stp', default=0, help='Store TP from Gear')
+parser.add_argument('--merits', default=0, help='Number of Store TP Merits')
+parser.add_argument('--kakka', action='store_true', help='Using Kakka:Ichi with a Ninja Subjob')
+parser.add_argument('--food_stp', default=0, help='Store TP gained from food')
 args = parser.parse_args()
 print(args)
 #
@@ -46,18 +50,23 @@ print(args)
 # Variables
 # str(args.name)
 weapon_delay = args.delay
-ja_stp_lvl = args.ja_stp
-merit_stp_lvl = int()
+jt_stp_lvl = args.jt_stp
+merit_stp_lvl = args.merits
 gear_haste = int()
 delay = float()
+delay_diff = float()
 d_mult = float()
 base = float()
 floor = float()
 tp_rate = float()
-ja_stp = int()
+jt_stp = int()
+stp = int()
+kakka = args.kakka
+gear_stp = args.gear_stp
+fstp = args.food_stp
 #
 # Dictionary
-stp_ja = {1: 10, 2: 15, 3: 20, 4: 25, 5: 30}
+stp_jt = {1: 10, 2: 15, 3: 20, 4: 25, 5: 30}
 # 
 # Dictionary
 # (weapon_delay_diff, delay_multiplier, base_sel, floor,)
@@ -86,13 +95,29 @@ def select_traits(weapon_delay,equa_components):
         return equa_components[4]
 #
 #
-def ja_conv(ja_stp_lvl,stp_ja):   
-    return stp_ja.get(int(ja_stp_lvl), 0)
+def jt_conv(jt_stp_lvl,stp_jt):   
+    return stp_jt.get(int(jt_stp_lvl), 0)
 #
 #
-def core_calc(base,d_mult,delay,floor):
-    tp_per_hit = float((floor+((delay*d_mult)/base)))
-    return math.floor(float(tp_per_hit))
+def tot_stp(jt_stp,merit_stp_lvl,kakka,gear_stp,fstp):
+    if kakka is True:
+        bonus = ((int(merit_stp_lvl)*2)+int(jt_stp)+10+int(gear_stp)+int(fstp))
+        return bonus
+    else:
+        bonus = ((int(merit_stp_lvl)*2)+int(jt_stp)+int(gear_stp)+int(fstp))
+        return bonus
+#
+#
+def delay_calc(weapon_delay,b_delay):
+    return weapon_delay-b_delay
+#
+#
+def core_calc(base,d_mult,delay_diff,floor,stp,weapon_delay):
+    base_tp = float(float(floor)+((float(weapon_delay)-float(delay_diff))*float(d_mult))/float(base))
+    stp_mod = (float(100)+float(stp))/float(100)
+    tp_per_hit = base_tp*stp_mod
+    print("Unrounded TP = "+str(tp_per_hit))
+    return format(tp_per_hit, '.1f')
 #
 #
 #########################################################
@@ -105,14 +130,16 @@ def core_calc(base,d_mult,delay,floor):
 traits = select_traits(weapon_delay,equa_components)
 print(traits)
 base = traits[2]
-delay = traits[0]
+delay_diff = traits[0]
 d_mult = traits[1]
 floor = traits[3]
-#tp_rate = core_calc(base,d_mult,delay,floor)
 print("Base = "+str(base))
 print("Delay = "+str(delay))
 print("Delay Multiplier = "+str(d_mult))
 print("Floor = "+str(floor))
-#print("TP per swing is "+str(tp_rate))
-ja_stp = ja_conv(ja_stp_lvl,stp_ja)
-print(ja_stp)
+jt_stp = jt_conv(jt_stp_lvl,stp_jt)
+print("Job Trait Store TP = "+str(jt_stp))
+stp = tot_stp(jt_stp,merit_stp_lvl,kakka,gear_stp,fstp)
+print("Total Store TP = "+str(stp))
+tp_rate = core_calc(base,d_mult,delay_diff,floor,stp,weapon_delay)
+print("TP per swing is "+str(tp_rate))
