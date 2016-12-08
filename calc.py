@@ -31,12 +31,13 @@ parser = argparse.ArgumentParser(
     description = 'Automates math behind Store TP and Swings to Weaponskills.',
     epilog = 'Last Updated: 20161126'
     )
-parser.add_argument('--delay', required=True, help='Weapon Delay of main weapon', type=int)
+parser.add_argument('--delay', required=True, help='Weapon Delay of Main weapon', type=int)
 parser.add_argument('--jt_stp', default=0, help='Store TP Rank', type=int)
-parser.add_argument('--gear_stp', default=0, help='Store TP from Gear')
-parser.add_argument('--merits', default=0, help='Number of Store TP Merits')
+parser.add_argument('--gear_stp', default=0, help='Store TP from Gear', type=int)
+parser.add_argument('--merits', default=0, help='Number of Store TP Merits', type=int)
 parser.add_argument('--kakka', action='store_true', help='Using Kakka:Ichi with a Ninja Subjob')
-parser.add_argument('--food_stp', default=0, help='Store TP gained from food')
+parser.add_argument('--food_stp', default=0, help='Store TP gained from food', type=int)
+parser.add_argument('--dw', default=0, help='Dual Wielding - Enter the Delay of the Offhand Weapon', type=int)
 args = parser.parse_args()
 print(args)
 #
@@ -51,15 +52,6 @@ print(args)
 weapon_delay = args.delay
 jt_stp_lvl = args.jt_stp
 merit_stp_lvl = args.merits
-#gear_haste = int()
-#delay = float()
-#delay_diff = float()
-#d_mult = float()
-#base = float()
-#floor = float()
-#tp_rate = float()
-#jt_stp = int()
-#stp = int()
 kakka = args.kakka
 gear_stp = args.gear_stp
 fstp = args.food_stp
@@ -78,7 +70,7 @@ traits = list()
 #                                                       #
 #########################################################
 #
-# THOUGHT: create a list of lists (dictionary?) to condence all below checks into a single function
+#
 #
 #
 def select_traits(weapon_delay,equa_components):
@@ -146,3 +138,5 @@ tp_rate = core_calc(base, d_mult, delay_diff, floor, stp, weapon_delay)
 context = Context(prec=3, rounding=ROUND_DOWN)
 tp_rate  = context.create_decimal_from_float(tp_rate)
 print("TP per swing is {}".format(tp_rate))
+build = 1000/tp_rate
+print("This is a {}-hit Build".format(build))
