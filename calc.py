@@ -18,7 +18,7 @@
 #
 import math
 import argparse
-import decimal
+from decimal import *
 #
 #
 #########################################################
@@ -31,8 +31,8 @@ parser = argparse.ArgumentParser(
     description = 'Automates math behind Store TP and Swings to Weaponskills.',
     epilog = 'Last Updated: 20161126'
     )
-parser.add_argument('--delay', required=True, help='Weapon Delay of main weapon')
-parser.add_argument('--jt_stp', default=0, help='Store TP Rank')
+parser.add_argument('--delay', required=True, help='Weapon Delay of main weapon', type=int)
+parser.add_argument('--jt_stp', default=0, help='Store TP Rank', type=int)
 parser.add_argument('--gear_stp', default=0, help='Store TP from Gear')
 parser.add_argument('--merits', default=0, help='Number of Store TP Merits')
 parser.add_argument('--kakka', action='store_true', help='Using Kakka:Ichi with a Ninja Subjob')
@@ -48,19 +48,18 @@ print(args)
 #########################################################
 #
 # Variables
-# str(args.name)
 weapon_delay = args.delay
 jt_stp_lvl = args.jt_stp
 merit_stp_lvl = args.merits
-gear_haste = int()
-delay = float()
-delay_diff = float()
-d_mult = float()
-base = float()
-floor = float()
-tp_rate = float()
-jt_stp = int()
-stp = int()
+#gear_haste = int()
+#delay = float()
+#delay_diff = float()
+#d_mult = float()
+#base = float()
+#floor = float()
+#tp_rate = float()
+#jt_stp = int()
+#stp = int()
 kakka = args.kakka
 gear_stp = args.gear_stp
 fstp = args.food_stp
@@ -96,15 +95,15 @@ def select_traits(weapon_delay,equa_components):
 #
 #
 def jt_conv(jt_stp_lvl,stp_jt):   
-    return stp_jt.get(int(jt_stp_lvl), 0)
+    return stp_jt.get(jt_stp_lvl, 0)
 #
 #
 def tot_stp(jt_stp,merit_stp_lvl,kakka,gear_stp,fstp):
     if kakka is True:
-        bonus = ((int(merit_stp_lvl)*2)+int(jt_stp)+10+int(gear_stp)+int(fstp))
+        bonus = (merit_stp_lvl*2)+jt_stp+10+gear_stp+fstp
         return bonus
     else:
-        bonus = ((int(merit_stp_lvl)*2)+int(jt_stp)+int(gear_stp)+int(fstp))
+        bonus = (merit_stp_lvl*2)+jt_stp+gear_stp+fstp
         return bonus
 #
 #
@@ -113,16 +112,18 @@ def delay_calc(weapon_delay,b_delay):
 #
 #
 def core_calc(base,d_mult,delay_diff,floor,stp,weapon_delay):
-    base_tp = float(float(floor)+((float(weapon_delay)-float(delay_diff))*float(d_mult))/float(base))
-    stp_mod = (float(100)+float(stp))/float(100)
-    tp_per_hit = base_tp*stp_mod
-    print("Unrounded TP = "+str(tp_per_hit))
-    return format(tp_per_hit, '.1f')
+    base_tp = floor + ((weapon_delay - delay_diff) * d_mult) / base
+    stp_mod = (100 + stp) / 100
+    tp_per_hit = base_tp * stp_mod
+    print("Should be 14.375 unrounded TP = {}".format(tp_per_hit)) #14.375
+    return tp_per_hit
 #
 #
 #########################################################
 #                                                       #
 # Main Program                                          #
+#                                                       #
+# Remember: print(type(variable))                       #
 #                                                       #
 #########################################################
 #
@@ -133,13 +134,15 @@ base = traits[2]
 delay_diff = traits[0]
 d_mult = traits[1]
 floor = traits[3]
-print("Base = "+str(base))
-print("Delay = "+str(delay))
-print("Delay Multiplier = "+str(d_mult))
-print("Floor = "+str(floor))
-jt_stp = jt_conv(jt_stp_lvl,stp_jt)
-print("Job Trait Store TP = "+str(jt_stp))
-stp = tot_stp(jt_stp,merit_stp_lvl,kakka,gear_stp,fstp)
-print("Total Store TP = "+str(stp))
-tp_rate = core_calc(base,d_mult,delay_diff,floor,stp,weapon_delay)
-print("TP per swing is "+str(tp_rate))
+print("Base = {}".format(traits[2]))
+print("Delay = {}".format(traits[0]))
+print("Delay Multiplier = {}".format(traits[1]))
+print("Floor = {}".format(traits[3]))
+jt_stp = jt_conv(jt_stp_lvl, stp_jt)
+print("Job Trait Store TP = {}".format(jt_stp))
+stp = tot_stp(jt_stp, merit_stp_lvl, kakka, gear_stp, fstp)
+print("Total Store TP = {}".format(stp))
+tp_rate = core_calc(base, d_mult, delay_diff, floor, stp, weapon_delay)
+context = Context(prec=3, rounding=ROUND_DOWN)
+tp_rate  = context.create_decimal_from_float(tp_rate)
+print("TP per swing is {}".format(tp_rate))
