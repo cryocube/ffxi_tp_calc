@@ -49,7 +49,8 @@ print(args)
 #########################################################
 #
 # Variables
-weapon_delay = args.delay
+main_delay = args.delay
+off_delay = args.dw
 jt_stp_lvl = args.jt_stp
 merit_stp_lvl = args.merits
 kakka = args.kakka
@@ -73,14 +74,14 @@ traits = list()
 #
 #
 #
-def select_traits(weapon_delay,equa_components):
-    if int(weapon_delay) <= 180:
+def select_traits(delay,equa_components):
+    if int(delay) <= 180:
         return equa_components[0]
-    elif int(weapon_delay) <= 450:
+    elif int(delay) <= 450:
         return equa_components[1]
-    elif int(weapon_delay) <= 480:
+    elif int(delay) <= 480:
         return equa_conponents[2]
-    elif int(weapon_delay) <= 530:
+    elif int(delay) <= 530:
         return equa_components[3]
     else:
         return equa_components[4]
@@ -99,12 +100,12 @@ def tot_stp(jt_stp,merit_stp_lvl,kakka,gear_stp,fstp):
         return bonus
 #
 #
-def delay_calc(weapon_delay,b_delay):
-    return weapon_delay-b_delay
+def delay_calc(main_delay,delay_diff,off_delay):
+    return (main_delay+off_delay)-delay_diff
 #
 #
-def core_calc(base,d_mult,delay_diff,floor,stp,weapon_delay):
-    base_tp = floor + ((weapon_delay - delay_diff) * d_mult) / base
+def core_calc(base,d_mult,floor,stp,delay):
+    base_tp = floor + (delay * d_mult) / base
     stp_mod = (100 + stp) / 100
     tp_per_hit = base_tp * stp_mod
     print("Should be 14.375 unrounded TP = {}".format(tp_per_hit)) #14.375
@@ -120,7 +121,8 @@ def core_calc(base,d_mult,delay_diff,floor,stp,weapon_delay):
 #########################################################
 #
 #
-traits = select_traits(weapon_delay,equa_components)
+delay = main_delay+off_delay
+traits = select_traits(delay,equa_components)
 print(traits)
 base = traits[2]
 delay_diff = traits[0]
@@ -130,11 +132,12 @@ print("Base = {}".format(traits[2]))
 print("Delay = {}".format(traits[0]))
 print("Delay Multiplier = {}".format(traits[1]))
 print("Floor = {}".format(traits[3]))
+delay = delay_calc(main_delay,delay_diff,off_delay)
 jt_stp = jt_conv(jt_stp_lvl, stp_jt)
 print("Job Trait Store TP = {}".format(jt_stp))
 stp = tot_stp(jt_stp, merit_stp_lvl, kakka, gear_stp, fstp)
 print("Total Store TP = {}".format(stp))
-tp_rate = core_calc(base, d_mult, delay_diff, floor, stp, weapon_delay)
+tp_rate = core_calc(base, d_mult, floor, stp, delay)
 context = Context(prec=3, rounding=ROUND_DOWN)
 tp_rate  = context.create_decimal_from_float(tp_rate)
 print("TP per swing is {}".format(tp_rate))
